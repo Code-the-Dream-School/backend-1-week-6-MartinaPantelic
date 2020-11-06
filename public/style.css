@@ -1,0 +1,27 @@
+    body {
+        font-family: sans-serif;
+        background: #fff;
+      }
+
+      .container {
+      	margin-top: 200px;
+      	text-align: center;
+      }
+
+      h1 {
+      	font-size: 45px;
+      }
+
+
+      form input[type=text] {
+      	max-width: 120px;
+				font-size: 32px;
+        text-align: center;
+      }
+
+      form input[type=submit] {
+      	height: 40px;
+      	font-size: 30px;
+      	text-align: auto;
+      	margin-left: 12px;
+      }

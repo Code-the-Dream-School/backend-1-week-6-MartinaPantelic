@@ -1,0 +1,19 @@
+<html>
+	<head>
+	 <link rel="stylesheet" href="style.css">
+	</head>
+	<body style="background-color: <%= background %>">
+		<div class="container">
+			<h1>
+				<%= message %>
+			</h1>
+			<form>
+				<input type='text' name='guess' />
+				<input type='submit' value='Guess!' />
+			</form>
+			<h3>
+			You have <%= remaining %> guesses left.</h3>
+			<h1><%= end_message %></h1>
+		</div>
+	</body>
+</html>
