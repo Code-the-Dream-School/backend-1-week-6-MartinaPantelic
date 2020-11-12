@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="style.css">
+</head>
+    <body style="background-color: <%= background %>;">
+        <div class="content">
+            <h1>You won! </h1><br>
+            <h2>The secret number was <%= session[:secret] %></h2>
+            <form method="get" action="/">
+                <label for="play_again">If you would like play again press the button</label><br>
+                <input type='submit' name="play_again" value='Play Again'>
+            </form>
+        </div>
+    </body>
+</html>

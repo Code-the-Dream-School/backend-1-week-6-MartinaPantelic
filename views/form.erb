@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="style.css">
+</head>
+    <body style="background-color: <%= background %>">
+    <div class="content">
+        <h1>Web Guesser</h1>
+        <div><p>You have 7 tries to guess the secret number. Good luck!</p></div>
+        <div>
+            <form method="post" action="/">
+                    <label for="number">Guess the number from 1 to 100</label>
+                    <input type="text" name="number" id="number" value=<%= @number %>><br>
+                <input type="submit" value="Guess!">
+                <p><%= session[:message] %></p>
+            </form>
+        </div>
+        <div>
+    </body>
+</html>
