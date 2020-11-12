@@ -1,75 +1,70 @@
 require "sinatra"
 require "sinatra/reloader"
 
-@@secret_number = rand(101)
-@@remaining_guesses = 7
-message = "Guess a secret number between 0 and 100!"
-end_message = ""
-@@result_msg_low = "Too low."
-@@result_msg_very_low = "Way too low!"
-@@result_msg_high = "Too high."
-@@result_msg_very_high = "Way too high!"
-# end_message_lost = "LOST"
-background = ""
+enable :sessions
+
+def guessed_number
+  session[:number]
+end
+
+def secret_number
+  session[:secret]
+end
+
+def answers_remain
+  7 - session[:counter]
+end
+
+def background
+  session[:background]
+end
+
+def guess_case
+  session[:background] = "#fff"
+  if guessed_number > secret_number
+    result = guessed_number - secret_number
+    if result <= 10
+      descript = "close but too high"
+      session[:background] = "#ffaaaa"
+    else result > 10
+      descript = "much too high"
+      puts "answers remain#{answers_remain}"
+      session[:background] = "#ff4444"     end
+  elsif guessed_number < secret_number
+    result = secret_number - guessed_number
+    if result <= 10
+      descript = "close but too low"
+      session[:background] = "#ffaaaa"
+    else result > 10
+      descript = "much too low"
+      session[:background] = "#ff4444"     end
+  end
+
+  puts "Your guess of #{guessed_number} was #{descript}."
+  session[:message] = "#{guessed_number} is #{descript}. You have #{answers_remain} remainig attempts. Try Again!"
+end
 
 get "/" do
-  erb :index, :locals => { :number => @@secret_number,
-                           :message => message,
-                           :end_message => end_message,
-                           :background => background,
-                           :remaining => @@remaining_guesses }
-
-  if params["guess"] != nil
-    end_message = ""
-    guess_int = params["guess"].to_i
-    message = check_guess(guess_int)
-    background = check_message(message)
-    @@remaining_guesses -= 1
-    if @@remaining_guesses == 0 || message == "Yes! The secret number is #{@@secret_number}"
-      if message != "Yes! The secret number is #{@@secret_number}"
-        end_message = "You lose. The secret number has changed."
-        background = "#eee"
-      end
-      if message == "Yes! The secret number is #{@@secret_number}"
-        end_message = "Play again!"
-      end
-      @@remaining_guesses = 7
-      @@secret_number = rand(101)
-    end
-  end
-  erb :index, :locals => { :number => @@secret_number,
-                           :guess => guess_int,
-                           :message => message,
-                           :end_message => end_message,
-                           :background => background,
-                           :remaining => @@remaining_guesses }
+  session[:secret] = rand(100) + 1
+  session[:counter] = 0
+  session[:message] = ""
+  session[:background] = "#fff"
+  erb :form
 end
 
-def check_guess(guess)
-  if guess == @@secret_number
-    "Yes! The secret number is #{@@secret_number}"
-  elsif guess < @@secret_number
-    if guess < @@secret_number - 10
-      @@result_msg_very_low
-    else
-      @@result_msg_low
-    end
-  elsif guess > @@secret_number
-    if guess > @@secret_number + 10
-      @@result_msg_very_high
-    else
-      @@result_msg_high
-    end
-  end
-end
-
-def check_message(message)
-  case message
-  when "Yes! The secret number is #{@@secret_number}" then "#BCF5A9"
-  when @@result_msg_very_high then "#ff4444"
-  when @@result_msg_high then "#ffaaaa"
-  when @@result_msg_very_low then "#ff4444"
-  when @@result_msg_low then "#ffaaaa"
-  else "white"
+post "/" do
+  session[:number] = params[:number].to_i if params[:number]
+  session[:counter] += 1
+  if session[:number] == session[:secret]
+    session[:background] = "#c4f6ff"
+    erb :win_message
+  elsif session[:counter] >= 7
+    session[:background] = "#000"
+    erb :lose_message
+  else
+    session[:background] = "#fff"
+    guess_case
+    session[:message]
+    erb :form
   end
 end
